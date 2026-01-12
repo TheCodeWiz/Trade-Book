@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  phone         String?   @unique
+  password      String
+  name          String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  trades        Trade[]
+  otpCodes      OtpCode[]
+  goals         Goal[]
+  mistakes      Mistake[]
+  tradingRules  TradingRule[]
+  notifications NotificationSettings?
+}
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  code      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // "email" or "phone"
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Trade {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  symbol        String   // Trading symbol (e.g., AAPL, BTC)
+  tradeType     String   // "BUY" or "SELL"
+  entryPrice    Float
+  exitPrice     Float?
+  quantity      Float
+  stopLoss      Float?
+  takeProfit    Float?
+  profitLoss    Float?
+  status        String   @default("OPEN") // "OPEN" or "CLOSED"
+  notes         String?
+  isStarred     Boolean  @default(false) // For best trades archive
+  tradeDate     DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// Goals & Targets
+model Goal {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  month         Int      // 1-12
+  year          Int
+  targetPnL     Float?   // Target P&L for the month
+  targetWinRate Float?   // Target win rate percentage
+  maxTradesPerDay Int?   // Maximum trades allowed per day
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, month, year])
+}
+
+// Learning Center - Mistakes
+model Mistake {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  category    String?  // e.g., "Emotional", "Technical", "Risk Management"
+  frequency   Int      @default(1) // How many times this mistake occurred
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Learning Center - Trading Rules
+model TradingRule {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rule        String
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Notifications Settings
+model NotificationSettings {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weeklyReports     Boolean  @default(true)
+  goalAlerts        Boolean  @default(true)
+  lastWeeklyReport  DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

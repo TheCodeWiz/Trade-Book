@@ -52,10 +52,28 @@ export async function POST(request: Request) {
         email: user.email,
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Signup error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+      stack: error.stack
+    });
+    
+    // Provide more specific error messages
+    let errorMessage = 'Failed to create user';
+    
+    if (error.code === 'P2002') {
+      errorMessage = 'User with this email or phone already exists';
+    } else if (error.message?.includes('connection')) {
+      errorMessage = 'Database connection error. Please try again.';
+    } else if (error.message) {
+      errorMessage = `Error: ${error.message}`;
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to create user' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

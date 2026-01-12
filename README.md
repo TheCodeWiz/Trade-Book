@@ -13,6 +13,7 @@
   <a href="#demo">Demo</a> •
   <a href="#tech-stack">Tech Stack</a> •
   <a href="#installation">Installation</a> •
+  <a href="#deployment">Deployment</a> •
   <a href="#environment-variables">Environment Variables</a> •
   <a href="#usage">Usage</a> •
   <a href="#screenshots">Screenshots</a> •

@@ -8,6 +8,8 @@ export async function POST(request: Request) {
   try {
     const { email, password, otpMethod } = await request.json();
 
+    console.log('Login attempt for:', email);
+
     // Validate required fields
     if (!email || !password) {
       return NextResponse.json(
@@ -103,10 +105,28 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(response);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Login error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      meta: error.meta,
+      stack: error.stack
+    });
+    
+    // Provide more specific error messages
+    let errorMessage = 'Login failed';
+    
+    if (error.message?.includes('connection')) {
+      errorMessage = 'Database connection error. Please try again.';
+    } else if (error.code === 'P2025') {
+      errorMessage = 'User not found';
+    } else if (error.message) {
+      errorMessage = `Error: ${error.message}`;
+    }
+    
     return NextResponse.json(
-      { error: 'Login failed' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

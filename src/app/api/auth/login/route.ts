@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import prisma from '@/lib/prisma';
 import { generateOTP, getOTPExpiry } from '@/lib/auth';
-import { sendOTPEmail, sendOTPSMS } from '@/lib/email';
+import { sendOTPEmail, sendOTPSMS, canSendEmail } from '@/lib/email';
 
 export async function POST(request: Request) {
   try {
@@ -60,6 +60,9 @@ export async function POST(request: Request) {
       },
     });
 
+    // Check if email is configured
+    const emailConfigured = canSendEmail();
+    
     // Send OTP based on method
     let otpSent = false;
     if (otpMethod === 'phone' && user.phone) {
@@ -78,12 +81,28 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({
-      message: 'OTP sent successfully',
+    // Build response
+    const response: {
+      message: string;
+      userId: string;
+      otpMethod: string;
+      destination: string | null;
+      demoMode?: boolean;
+      demoOtp?: string;
+    } = {
+      message: emailConfigured ? 'OTP sent successfully' : 'OTP generated (Demo Mode - check below)',
       userId: user.id,
       otpMethod: otpMethod || 'email',
       destination: otpMethod === 'phone' ? user.phone : user.email,
-    });
+    };
+
+    // In demo mode (email not configured), include the OTP in response
+    if (!emailConfigured) {
+      response.demoMode = true;
+      response.demoOtp = otp;
+    }
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(

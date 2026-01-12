@@ -16,6 +16,8 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
   const [canResend, setCanResend] = useState(false);
+  const [demoMode, setDemoMode] = useState(false);
+  const [demoOtp, setDemoOtp] = useState('');
   const router = useRouter();
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -61,6 +63,16 @@ export default function LoginPage() {
 
       setUserId(data.userId);
       setDestination(data.destination);
+      
+      // Handle demo mode
+      if (data.demoMode && data.demoOtp) {
+        setDemoMode(true);
+        setDemoOtp(data.demoOtp);
+        // Auto-fill OTP in demo mode
+        const otpDigits = data.demoOtp.split('');
+        setOtp(otpDigits);
+      }
+      
       setStep('otp');
       setTimeLeft(300);
       setCanResend(false);
@@ -288,11 +300,19 @@ export default function LoginPage() {
           </form>
         ) : (
           <form onSubmit={handleOtpSubmit} className="space-y-6">
+            {demoMode && (
+              <div className="bg-amber-500/10 border border-amber-500/30 text-amber-400 px-4 py-3 rounded-xl text-sm text-center">
+                <p className="font-medium">🎮 Demo Mode Active</p>
+                <p className="text-xs mt-1 text-amber-300/80">Email not configured. OTP has been auto-filled for you.</p>
+                <p className="text-lg font-mono font-bold mt-2">{demoOtp}</p>
+              </div>
+            )}
+            
             <div className="text-center">
               <p className="text-gray-300 mb-2">
-                We sent a 6-digit code to
+                {demoMode ? 'Enter the code below to continue' : 'We sent a 6-digit code to'}
               </p>
-              <p className="text-white font-medium">{destination}</p>
+              {!demoMode && <p className="text-white font-medium">{destination}</p>}
             </div>
 
             <div className="flex justify-center gap-2">

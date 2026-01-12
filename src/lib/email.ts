@@ -3,8 +3,13 @@ import nodemailer from 'nodemailer';
 // Lazy initialization to avoid build-time errors
 let transporter: nodemailer.Transporter | null = null;
 
+// Check if email is properly configured
+function isEmailConfigured(): boolean {
+  return !!(process.env.EMAIL_USER && process.env.EMAIL_PASS);
+}
+
 function getTransporter() {
-  if (!transporter) {
+  if (!transporter && isEmailConfigured()) {
     transporter = nodemailer.createTransport({
       host: process.env.EMAIL_HOST || 'smtp.gmail.com',
       port: parseInt(process.env.EMAIL_PORT || '587'),
@@ -16,6 +21,11 @@ function getTransporter() {
     });
   }
   return transporter;
+}
+
+// Export function to check if email is configured
+export function canSendEmail(): boolean {
+  return isEmailConfigured();
 }
 
 interface WeeklyReportData {
@@ -34,13 +44,22 @@ interface WeeklyReportData {
 }
 
 export async function sendWeeklyReportEmail(email: string, data: WeeklyReportData): Promise<boolean> {
+  // Skip if email not configured
+  if (!isEmailConfigured()) {
+    console.log('[DEMO MODE] Email not configured. Weekly report not sent.');
+    return false;
+  }
+
   try {
+    const transport = getTransporter();
+    if (!transport) return false;
+
     const formatCurrency = (amount: number) => {
       const symbol = data.currency === 'INR' ? '₹' : '$';
       return `${amount >= 0 ? '+' : ''}${symbol}${Math.abs(amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
 
-    await getTransporter().sendMail({
+    await transport.sendMail({
       from: `"Trade Ledger Pro" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: `📊 Your Weekly Trading Report - ${data.weekStart} to ${data.weekEnd}`,
@@ -151,7 +170,16 @@ export async function sendGoalAlertEmail(
   percentage: number,
   currency: string
 ): Promise<boolean> {
+  // Skip if email not configured
+  if (!isEmailConfigured()) {
+    console.log('[DEMO MODE] Email not configured. Goal alert not sent.');
+    return false;
+  }
+
   try {
+    const transport = getTransporter();
+    if (!transport) return false;
+
     const formatCurrency = (amount: number) => {
       const symbol = currency === 'INR' ? '₹' : '$';
       return `${symbol}${Math.abs(amount).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -161,7 +189,7 @@ export async function sendGoalAlertEmail(
     const currentDisplay = isWinRate ? `${currentValue.toFixed(1)}%` : formatCurrency(currentValue);
     const targetDisplay = isWinRate ? `${targetValue}%` : formatCurrency(targetValue);
 
-    await getTransporter().sendMail({
+    await transport.sendMail({
       from: `"Trade Ledger Pro" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: `🎯 Goal Alert: You've reached ${percentage}% of your ${goalType} target!`,
@@ -222,8 +250,20 @@ export async function sendGoalAlertEmail(
 }
 
 export async function sendOTPEmail(email: string, otp: string, name: string): Promise<boolean> {
+  // If email is not configured, log the OTP and return true (for development/demo mode)
+  if (!isEmailConfigured()) {
+    console.log(`[DEMO MODE] Email not configured. OTP for ${email}: ${otp}`);
+    return true; // Return true so login flow continues
+  }
+
   try {
-    await getTransporter().sendMail({
+    const transport = getTransporter();
+    if (!transport) {
+      console.log(`[DEMO MODE] No transporter available. OTP for ${email}: ${otp}`);
+      return true;
+    }
+
+    await transport.sendMail({
       from: `"Trade Ledger Pro" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: 'Your Trade Ledger Pro Verification Code',

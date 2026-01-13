@@ -44,14 +44,15 @@ export default function DatePicker({
     if (isCalendarOpen && inputRef.current) {
       const rect = inputRef.current.getBoundingClientRect();
       const calendarWidth = 288; // w-72 = 18rem = 288px
-      const calendarHeight = 360;
+      const calendarHeight = 400; // Including drag handle
       const isMobile = window.innerWidth < 640;
       
       if (isMobile) {
-        // Center on screen for mobile
+        // Center horizontally and position at top portion of screen for mobile
+        const centerX = (window.innerWidth - calendarWidth) / 2;
         setDropdownPosition({
-          top: Math.max(20, (window.innerHeight - calendarHeight) / 2),
-          left: Math.max(10, (window.innerWidth - calendarWidth) / 2),
+          top: 60, // Fixed position from top on mobile for visibility
+          left: Math.max(8, centerX),
         });
       } else {
         // Position near input for desktop
@@ -283,30 +284,36 @@ export default function DatePicker({
 
       {/* Calendar Dropdown - Rendered via Portal */}
       {isCalendarOpen && isMounted && createPortal(
-        <div 
-          ref={calendarRef}
-          id="datepicker-calendar"
-          className="fixed z-[9999] w-72 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl shadow-black/50 overflow-hidden"
-          style={{
-            top: dropdownPosition.top,
-            left: dropdownPosition.left,
-            cursor: isDragging ? 'grabbing' : 'default',
-          }}
-        >
-          {/* Draggable Handle */}
+        <>
+          {/* Backdrop for mobile */}
           <div 
-            className="flex items-center justify-between px-3 py-2 bg-gray-800 border-b border-gray-700 cursor-grab active:cursor-grabbing touch-none select-none"
-            onMouseDown={handleDragStart}
-            onTouchStart={handleDragStart}
+            className="fixed inset-0 bg-black/50 z-[9998] sm:hidden"
+            onClick={() => setIsCalendarOpen(false)}
+          />
+          <div 
+            ref={calendarRef}
+            id="datepicker-calendar"
+            className="fixed z-[9999] w-72 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl shadow-black/50 overflow-hidden"
+            style={{
+              top: dropdownPosition.top,
+              left: dropdownPosition.left,
+              cursor: isDragging ? 'grabbing' : 'default',
+            }}
           >
-            <div className="flex items-center gap-2 text-gray-400 text-xs">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
-              </svg>
-              <span>Drag to move</span>
-            </div>
-            <button
-              type="button"
+            {/* Draggable Handle */}
+            <div 
+              className="flex items-center justify-between px-3 py-2 bg-gray-800 border-b border-gray-700 cursor-grab active:cursor-grabbing touch-none select-none"
+              onMouseDown={handleDragStart}
+              onTouchStart={handleDragStart}
+            >
+              <div className="flex items-center gap-2 text-gray-400 text-xs">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+                </svg>
+                <span>Drag to move</span>
+              </div>
+              <button
+                type="button"
               onClick={() => setIsCalendarOpen(false)}
               className="p-1 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition-colors"
             >
@@ -391,7 +398,8 @@ export default function DatePicker({
               Today
             </button>
           </div>
-        </div>,
+          </div>
+        </>,
         document.body
       )}
     </div>

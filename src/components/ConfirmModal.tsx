@@ -70,14 +70,16 @@ export default function ConfirmModal({
         {/* Actions */}
         <div className="flex gap-3">
           <button
+            type="button"
             onClick={onCancel}
-            className="flex-1 py-3 px-4 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold rounded-xl transition-all duration-200 border border-gray-700"
+            className="flex-1 py-3 px-4 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-gray-300 font-semibold rounded-xl transition-all duration-200 border border-gray-700 touch-manipulation select-none"
           >
             {cancelText}
           </button>
           <button
+            type="button"
             onClick={onConfirm}
-            className={`flex-1 py-3 px-4 ${styles.confirmBg} text-white font-semibold rounded-xl shadow-lg transition-all duration-200`}
+            className={`flex-1 py-3 px-4 ${styles.confirmBg} text-white font-semibold rounded-xl shadow-lg transition-all duration-200 touch-manipulation select-none active:scale-95`}
           >
             {confirmText}
           </button>

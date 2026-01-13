@@ -420,8 +420,9 @@ function DashboardContent() {
                 )}
               </div>
               <button
+                type="button"
                 onClick={handleAddTrade}
-                className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 transform transition-all duration-200 hover:scale-[1.02] flex items-center justify-center gap-2 text-sm"
+                className="w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 active:from-emerald-800 active:to-emerald-900 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 transform transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 text-sm touch-manipulation select-none"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -441,8 +442,9 @@ function DashboardContent() {
                 <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">No trades yet</h3>
                 <p className="text-gray-500 mb-6 max-w-sm mx-auto px-4 text-sm sm:text-base">Start tracking your trades by adding your first entry to see your performance analytics</p>
                 <button
+                  type="button"
                   onClick={handleAddTrade}
-                  className="px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 transition-all duration-200 text-sm sm:text-base"
+                  className="px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 active:from-emerald-800 active:to-emerald-900 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 transition-all duration-200 text-sm sm:text-base touch-manipulation select-none active:scale-[0.98]"
                 >
                   Add Your First Trade
                 </button>

@@ -357,13 +357,13 @@ export default function TradeModal({ isOpen, onClose, onSave, trade }: TradeModa
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold rounded-xl transition-all duration-200 border border-gray-700 text-sm"
+              className="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-gray-300 font-semibold rounded-xl transition-all duration-200 border border-gray-700 text-sm touch-manipulation select-none"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 transition-all duration-200 text-sm"
+              className="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 active:from-emerald-800 active:to-emerald-900 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 transition-all duration-200 text-sm touch-manipulation select-none active:scale-[0.98]"
             >
               {trade ? 'Update Trade' : 'Add Trade'}
             </button>

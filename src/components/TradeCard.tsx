@@ -93,8 +93,9 @@ export default function TradeCard({ trade, onEdit, onDelete, onToggleStar }: Tra
         {/* Star Button */}
         {onToggleStar && (
           <button
+            type="button"
             onClick={(e) => { e.stopPropagation(); onToggleStar(); }}
-            className={`p-1.5 sm:p-2 rounded-lg transition-all flex-shrink-0 ${trade.isStarred ? 'text-yellow-400 bg-yellow-500/20' : 'text-gray-600 hover:text-yellow-400 hover:bg-gray-800'}`}
+            className={`p-1.5 sm:p-2 rounded-lg transition-all flex-shrink-0 touch-manipulation select-none ${trade.isStarred ? 'text-yellow-400 bg-yellow-500/20 active:bg-yellow-500/30' : 'text-gray-600 hover:text-yellow-400 hover:bg-gray-800 active:bg-gray-700'}`}
             title={trade.isStarred ? 'Unstar trade' : 'Star as best trade'}
           >
             <svg className="w-4 h-4 sm:w-5 sm:h-5" fill={trade.isStarred ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
@@ -171,8 +172,9 @@ export default function TradeCard({ trade, onEdit, onDelete, onToggleStar }: Tra
       {/* Actions */}
       <div className="flex gap-2 sm:gap-3 pt-3 sm:pt-4 border-t border-gray-800">
         <button
+          type="button"
           onClick={onEdit}
-          className="flex-1 py-2 sm:py-2.5 px-2 sm:px-4 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg sm:rounded-xl transition-all duration-200 text-[11px] sm:text-sm font-medium flex items-center justify-center gap-1 sm:gap-2 border border-gray-700"
+          className="flex-1 py-2 sm:py-2.5 px-2 sm:px-4 bg-gray-800 hover:bg-gray-700 active:bg-gray-600 text-gray-300 hover:text-white rounded-lg sm:rounded-xl transition-all duration-200 text-[11px] sm:text-sm font-medium flex items-center justify-center gap-1 sm:gap-2 border border-gray-700 touch-manipulation select-none"
         >
           <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -180,8 +182,9 @@ export default function TradeCard({ trade, onEdit, onDelete, onToggleStar }: Tra
           Edit
         </button>
         <button
+          type="button"
           onClick={onDelete}
-          className="flex-1 py-2 sm:py-2.5 px-2 sm:px-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg sm:rounded-xl transition-all duration-200 text-[11px] sm:text-sm font-medium flex items-center justify-center gap-1 sm:gap-2 border border-red-500/30"
+          className="flex-1 py-2 sm:py-2.5 px-2 sm:px-4 bg-red-500/10 hover:bg-red-500/20 active:bg-red-500/30 text-red-400 rounded-lg sm:rounded-xl transition-all duration-200 text-[11px] sm:text-sm font-medium flex items-center justify-center gap-1 sm:gap-2 border border-red-500/30 touch-manipulation select-none"
         >
           <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

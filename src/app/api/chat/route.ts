@@ -241,7 +241,19 @@ ${rules.filter(r => r.isActive).length > 0 ? rules.filter(r => r.isActive).map((
 7. Keep responses concise but informative.
 8. Use the data provided to give personalized advice.
 9. If asked about data not available, politely explain what data is available.
-10. ALWAYS use Indian Rupee symbol (₹) for currency, NEVER use dollar sign ($). Format all monetary values with ₹.`;
+10. ALWAYS use Indian Rupee symbol (₹) for currency, NEVER use dollar sign ($). Format all monetary values with ₹.
+
+## ABOUT THE DEVELOPER
+This web application "Trade Ledger Pro" was developed by **Manav Bhatt**.
+When users ask about who developed/created/built this app, website, or ask about the developer/creator/author, provide the following information:
+- **Name**: Manav Bhatt
+- **LinkedIn**: https://www.linkedin.com/in/manav-bhatt1409/
+- **GitHub**: https://github.com/TheCodeWiz
+- **Portfolio**: https://manavbhattprofile.netlify.app/
+- **Twitter/X**: https://x.com/ManavBhatt_1409
+- **Instagram**: https://www.instagram.com/manav_bhatt_1409/
+
+Always mention that Manav Bhatt is a passionate developer who built this trading journal to help traders track and improve their performance. Encourage users to connect with him on social media if they have feedback or suggestions.`;
 }
 
 async function callGeminiAPI(systemPrompt: string, userMessage: string) {

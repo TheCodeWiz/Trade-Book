@@ -15,6 +15,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Trade Ledger Pro - Trading Journal",
   description: "Your personal trading journal to track and analyze your trades",
+  authors: [{ name: "Manav Bhatt", url: "https://www.linkedin.com/in/manav-bhatt1409/" }],
+  creator: "Manav Bhatt",
 };
 
 export default function RootLayout({

@@ -19,7 +19,7 @@ function renderMarkdown(text: string): React.ReactNode {
   let elementKey = 0; // Unique key counter for elements
 
   const processInlineMarkdown = (line: string): React.ReactNode => {
-    // Process inline markdown: bold, italic, code
+    // Process inline markdown: bold, italic, code, and URLs
     const parts: React.ReactNode[] = [];
     let remaining = line;
     let key = 0;
@@ -31,11 +31,14 @@ function renderMarkdown(text: string): React.ReactNode {
       const italicMatch = remaining.match(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)|(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/);
       // Inline code: `code`
       const codeMatch = remaining.match(/`([^`]+)`/);
+      // URL: http:// or https://
+      const urlMatch = remaining.match(/(https?:\/\/[^\s<>"\]]+)/);
 
       const matches = [
         { type: 'bold', match: boldMatch, index: boldMatch?.index ?? Infinity },
         { type: 'italic', match: italicMatch, index: italicMatch?.index ?? Infinity },
         { type: 'code', match: codeMatch, index: codeMatch?.index ?? Infinity },
+        { type: 'url', match: urlMatch, index: urlMatch?.index ?? Infinity },
       ].filter(m => m.match).sort((a, b) => a.index - b.index);
 
       if (matches.length === 0) {
@@ -64,6 +67,19 @@ function renderMarkdown(text: string): React.ReactNode {
         case 'code':
           parts.push(<code key={key++} className="bg-gray-700 px-1.5 py-0.5 rounded text-emerald-400 text-xs font-mono">{content}</code>);
           break;
+        case 'url':
+          parts.push(
+            <a 
+              key={key++} 
+              href={matchObj[1]} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-emerald-400 hover:text-emerald-300 underline break-all"
+            >
+              {matchObj[1]}
+            </a>
+          );
+          break;
       }
 
       remaining = remaining.slice(matchIndex + matchObj[0].length);
@@ -79,7 +95,7 @@ function renderMarkdown(text: string): React.ReactNode {
       elements.push(
         <ListTag key={listKey} className={`${listType === 'ul' ? 'list-disc' : 'list-decimal'} list-inside space-y-1 my-2`}>
           {listItems.map((item, i) => (
-            <li key={`${listKey}-item-${i}`} className="text-gray-200">{processInlineMarkdown(item)}</li>
+            <li key={`${listKey}-item-${i}`} className="text-gray-200 break-words">{processInlineMarkdown(item)}</li>
           ))}
         </ListTag>
       );
@@ -124,7 +140,7 @@ function renderMarkdown(text: string): React.ReactNode {
     // Regular paragraph
     else {
       flushList();
-      elements.push(<p key={`p-${elementKey++}`} className="text-gray-200">{processInlineMarkdown(line)}</p>);
+      elements.push(<p key={`p-${elementKey++}`} className="text-gray-200 break-words">{processInlineMarkdown(line)}</p>);
     }
   });
 
@@ -347,13 +363,13 @@ export default function AIChatbot() {
                 className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[85%] rounded-2xl px-4 py-3 ${
+                  className={`max-w-[85%] rounded-2xl px-4 py-3 overflow-hidden ${
                     message.role === 'user'
                       ? 'bg-emerald-600 text-white rounded-br-md'
                       : 'bg-gray-800 text-gray-200 rounded-bl-md'
                   }`}
                 >
-                  <div className="text-sm">
+                  <div className="text-sm break-words overflow-wrap-anywhere">
                     {message.role === 'assistant' ? renderMarkdown(message.content) : message.content}
                   </div>
                   <div className={`text-xs mt-2 ${message.role === 'user' ? 'text-emerald-200' : 'text-gray-500'}`}>
@@ -415,11 +431,24 @@ export default function AIChatbot() {
                 </svg>
               </button>
             </div>
-            <div className="mt-1.5 sm:mt-2 flex items-center justify-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-500">
-              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-              <span>Powered by Gemini AI</span>
+            <div className="mt-1.5 sm:mt-2 flex flex-col items-center gap-1">
+              <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs text-gray-500">
+                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span>Powered by Gemini AI</span>
+              </div>
+              <div className="flex items-center gap-1 text-[9px] sm:text-[10px] text-gray-600">
+                <span>Built by</span>
+                <a
+                  href="https://www.linkedin.com/in/manav-bhatt1409/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-emerald-500 hover:text-emerald-400 font-medium transition-colors"
+                >
+                  Manav Bhatt
+                </a>
+              </div>
             </div>
           </div>
         </div>
